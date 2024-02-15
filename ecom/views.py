@@ -60,9 +60,8 @@ def afterlogin_view(request):
     else:
         return redirect('admin-dashboard')
 
-#---------------------------------------------------------------------------------
+
 #------------------------ ADMIN RELATED VIEWS START ------------------------------
-#---------------------------------------------------------------------------------
 @login_required(login_url='adminlogin')
 def admin_dashboard_view(request):
     # for cards on dashboard
@@ -201,9 +200,7 @@ def view_feedback_view(request):
 
 
 
-#---------------------------------------------------------------------------------
-#------------------------ PUBLIC CUSTOMER RELATED VIEWS START ---------------------
-#---------------------------------------------------------------------------------
+
 def search_view(request):
     # whatever user write in search box we get in query
     query = request.GET['query']
@@ -325,9 +322,7 @@ def send_feedback_view(request):
     return render(request, 'ecom/send_feedback.html', {'feedbackForm':feedbackForm})
 
 
-#---------------------------------------------------------------------------------
-#------------------------ CUSTOMER RELATED VIEWS START ------------------------------
-#---------------------------------------------------------------------------------
+
 @login_required(login_url='customerlogin')
 @user_passes_test(is_customer)
 def customer_home_view(request):
@@ -390,15 +385,10 @@ def customer_address_view(request):
 
 
 
-# here we are just directing to this view...actually we have to check whther payment is successful or not
-#then only this view should be accessed
+
 @login_required(login_url='customerlogin')
 def payment_success_view(request):
-    # Here we will place order | after successful payment
-    # we will fetch customer  mobile, address, Email
-    # we will fetch product id from cookies then respective details from db
-    # then we will create order objects and store in db
-    # after that we will delete cookies because after order placed...cart should be empty
+    
     customer=models.Customer.objects.get(user_id=request.user.id)
     products=None
     email=None
@@ -419,9 +409,6 @@ def payment_success_view(request):
     if 'address' in request.COOKIES:
         address=request.COOKIES['address']
 
-    # here we are placing number of orders as much there is a products
-    # suppose if we have 5 items in cart and we place order....so 5 rows will be created in orders table
-    # there will be lot of redundant data in orders table...but its become more complicated if we normalize it
     for product in products:
         models.Orders.objects.get_or_create(customer=customer,product=product,status='Pending',email=email,mobile=mobile,address=address)
 
@@ -539,9 +526,7 @@ def edit_profile_view(request):
 
 
 
-#---------------------------------------------------------------------------------
-#------------------------ ABOUT US AND CONTACT US VIEWS START --------------------
-#---------------------------------------------------------------------------------
+
 def aboutus_view(request):
     return render(request,'ecom/aboutus.html')
 
